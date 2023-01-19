@@ -14,7 +14,7 @@
     <name>rest-with-spring-boot-and-java-erudio</name>
     <description>rest-with-spring-boot-and-java-erudio</description>
     <properties>
-        <java.version>18</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
