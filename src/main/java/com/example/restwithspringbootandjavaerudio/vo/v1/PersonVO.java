@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class PersonVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private Long id;
 	@JsonProperty("first_name")
 	private String firstName;
