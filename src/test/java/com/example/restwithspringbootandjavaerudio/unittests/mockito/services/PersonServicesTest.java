@@ -12,11 +12,15 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.modelmapper.ModelMapper;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +36,9 @@ class PersonServicesTest {
     private PersonServices service;
     @Mock
     PersonRepository repository;
+
+    @Mock
+    ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -65,21 +72,21 @@ class PersonServicesTest {
     @Test
     void testCreate() {
         Person entity = input.mockEntity(1L);
-        entity.setId(1L);
-
         Person persisted = entity;
-        persisted.setId(1L);
         PersonVO vo = input.mockVO(1);
-        vo.setKey(1L);
 
+        when(modelMapper.map(vo, Person.class)).thenReturn(persisted);
         when(repository.save(entity)).thenReturn(persisted);
+        when(modelMapper.map(persisted, PersonVO.class)).thenReturn(vo);
+
         var result = service.create(vo);
 
         result.setKey(1L);
         assertNotNull(result);
         assertNotNull(result.getKey());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("links: [</api/person/v1/{id}>;rel=\"self\"]"));
+        System.out.println(result);
+        assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
         assertEquals("Addres Test1", result.getAddress());
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
@@ -100,7 +107,8 @@ class PersonServicesTest {
         assertNotNull(result);
         assertNotNull(result.getKey());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("links: [</api/person/v1/{id}>;rel=\"self\"]"));
+        System.out.println(result);
+        assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
         assertEquals("Addres Test1", result.getAddress());
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());

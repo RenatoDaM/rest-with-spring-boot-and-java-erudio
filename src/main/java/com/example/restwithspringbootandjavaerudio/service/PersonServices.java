@@ -62,11 +62,7 @@ public class PersonServices {
 		if (person == null) throw new RequiredObjectIsNullNotFoundException();
 		logger.info("Creating one person!");
 		var entity = modelMapper.map(person, Person.class);
-		System.out.println(entity.getId());
-		System.out.println(entity.getFirstName());
-		System.out.println(entity.getLastName());
-		var vo =  modelMapper.map(entity, PersonVO.class);
-		repository.save(entity);
+		var vo =  modelMapper.map(repository.save(entity), PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
