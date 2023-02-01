@@ -1,6 +1,7 @@
 package com.example.restwithspringbootandjavaerudio.exceptions.handler;
 
 import com.example.restwithspringbootandjavaerudio.exceptions.ExceptionResponse;
+import com.example.restwithspringbootandjavaerudio.exceptions.InvalidJwtAuthenticationException;
 import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullNotFoundException;
 import com.example.restwithspringbootandjavaerudio.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,16 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(RequiredObjectIsNullNotFoundException.class)
     public final ResponseEntity<ExceptionResponse> handleBadRequestException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    public final ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(),
                 ex.getMessage(),
