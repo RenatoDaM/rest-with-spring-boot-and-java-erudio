@@ -1,15 +1,15 @@
-package com.example.restwithspringbootandjavaerudio.service;
+package com.example.restwithspringbootandjavaerudio.services;
 
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.example.restwithspringbootandjavaerudio.controller.BookController;
-import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullNotFoundException;
+import com.example.restwithspringbootandjavaerudio.controllers.BookController;
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.BookVO;
+import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullException;
 import com.example.restwithspringbootandjavaerudio.exceptions.ResourceNotFoundException;
 import com.example.restwithspringbootandjavaerudio.mapper.DozerMapper;
 import com.example.restwithspringbootandjavaerudio.model.Book;
-import com.example.restwithspringbootandjavaerudio.repository.BookRepository;
-import com.example.restwithspringbootandjavaerudio.vo.v1.BookVO;
+import com.example.restwithspringbootandjavaerudio.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -47,7 +47,7 @@ public class BookServices {
 	
 	public BookVO create(BookVO book) {
 
-		if (book == null) throw new RequiredObjectIsNullNotFoundException();
+		if (book == null) throw new RequiredObjectIsNullException();
 		
 		logger.info("Creating one book!");
 		var entity = DozerMapper.parseObject(book, Book.class);
@@ -58,7 +58,7 @@ public class BookServices {
 	
 	public BookVO update(BookVO book) {
 
-		if (book == null) throw new RequiredObjectIsNullNotFoundException();
+		if (book == null) throw new RequiredObjectIsNullException();
 		
 		logger.info("Updating one book!");
 		

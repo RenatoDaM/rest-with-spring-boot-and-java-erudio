@@ -1,26 +1,19 @@
-package com.example.restwithspringbootandjavaerudio.service;
+package com.example.restwithspringbootandjavaerudio.services;
 
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.example.restwithspringbootandjavaerudio.controller.PersonController;
-import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullNotFoundException;
+import com.example.restwithspringbootandjavaerudio.controllers.PersonController;
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.PersonVO;
+import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullException;
 import com.example.restwithspringbootandjavaerudio.exceptions.ResourceNotFoundException;
 import com.example.restwithspringbootandjavaerudio.mapper.DozerMapper;
-import com.example.restwithspringbootandjavaerudio.mapper.custom.PersonMapper;
 import com.example.restwithspringbootandjavaerudio.model.Person;
-import com.example.restwithspringbootandjavaerudio.repository.PersonRepository;
-import com.example.restwithspringbootandjavaerudio.vo.v1.PersonVO;
-import com.example.restwithspringbootandjavaerudio.vo.v2.PersonVOV2;
-import org.apache.catalina.mapper.Mapper;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
+import com.example.restwithspringbootandjavaerudio.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
-
-import javax.print.attribute.standard.Destination;
 
 @Service
 public class PersonServices {
@@ -30,19 +23,14 @@ public class PersonServices {
 	@Autowired
 	PersonRepository repository;
 
-	@Autowired
-	PersonMapper mapper;
-	@Autowired
-	private ModelMapper modelMapper;
-
 	public List<PersonVO> findAll() {
 
 		logger.info("Finding all people!");
 
 		var persons = DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);
-		persons.stream().forEach(person -> person.add(linkTo(methodOn(PersonController.class)
-				.findById(person.getKey()))
-				.withSelfRel()));
+		persons
+			.stream()
+			.forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
 		return persons;
 	}
 
@@ -52,36 +40,25 @@ public class PersonServices {
 		
 		var entity = repository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-		PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
+		var vo = DozerMapper.parseObject(entity, PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
 		return vo;
 	}
-
+	
 	public PersonVO create(PersonVO person) {
 
-		if (person == null) throw new RequiredObjectIsNullNotFoundException();
+		if (person == null) throw new RequiredObjectIsNullException();
+		
 		logger.info("Creating one person!");
-		var entity = modelMapper.map(person, Person.class);
-		var vo =  modelMapper.map(repository.save(entity), PersonVO.class);
+		var entity = DozerMapper.parseObject(person, Person.class);
+		var vo =  DozerMapper.parseObject(repository.save(entity), PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
-		return vo;
-	}
-
-	public PersonVOV2 createV2(PersonVOV2 person) {
-
-		ModelMapper modelMapper = new ModelMapper();
-		System.out.println(person.getFirstName());
-		System.out.println(person.getLastName());
-		Person entity = modelMapper.map(person, Person.class);
-		System.out.println(entity.getFirstName());
-		System.out.println(entity.getLastName());
-		var vo =  modelMapper.map(repository.save(entity), PersonVOV2.class);
-
-
 		return vo;
 	}
 	
 	public PersonVO update(PersonVO person) {
+
+		if (person == null) throw new RequiredObjectIsNullException();
 		
 		logger.info("Updating one person!");
 		
