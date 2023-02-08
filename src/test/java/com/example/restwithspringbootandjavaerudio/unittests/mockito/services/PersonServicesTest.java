@@ -1,30 +1,28 @@
 package com.example.restwithspringbootandjavaerudio.unittests.mockito.services;
 
-import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullNotFoundException;
-import com.example.restwithspringbootandjavaerudio.model.Person;
-import com.example.restwithspringbootandjavaerudio.repository.PersonRepository;
-import com.example.restwithspringbootandjavaerudio.service.PersonServices;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
 import com.example.restwithspringbootandjavaerudio.unittests.mapper.mocks.MockPerson;
-import com.example.restwithspringbootandjavaerudio.vo.v1.PersonVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.List;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.PersonVO;
+import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullException;
+import com.example.restwithspringbootandjavaerudio.model.Person;
+import com.example.restwithspringbootandjavaerudio.repositories.PersonRepository;
+import com.example.restwithspringbootandjavaerudio.services.PersonServices;
+import org.modelmapper.ModelMapper;
+
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -50,7 +48,7 @@ class PersonServicesTest {
 
     @Test
     void findById() {
-        Person entity = input.mockEntity(1L);
+        Person entity = input.mockEntity(1);
         entity.setId(1L);
 
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
@@ -71,7 +69,7 @@ class PersonServicesTest {
     //@MockitoSettings(strictness = Strictness.WARN)
     @Test
     void testCreate() {
-        Person entity = input.mockEntity(1L);
+        Person entity = input.mockEntity(1);
         Person persisted = entity;
         PersonVO vo = input.mockVO(1);
 
@@ -118,7 +116,7 @@ class PersonServicesTest {
 
     @Test
     void update() {
-        Person entity = input.mockEntity(1L);
+        Person entity = input.mockEntity(1);
         entity.setId(1L);
 
         Person persisted = entity;
@@ -143,7 +141,7 @@ class PersonServicesTest {
 
     @Test
     void delete() {
-        Person entity = input.mockEntity(1L);
+        Person entity = input.mockEntity(1);
         entity.setId(1L);
 
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
@@ -153,7 +151,7 @@ class PersonServicesTest {
 
     @Test
     void testCreateWithNullPerson() {
-        Exception exception = assertThrows(RequiredObjectIsNullNotFoundException.class, () -> {
+        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
             service.create(null);
         });
 
@@ -165,7 +163,7 @@ class PersonServicesTest {
 
     @Test
     void testUpdateWithNullPerson() {
-        Exception exception = assertThrows(RequiredObjectIsNullNotFoundException.class, () -> {
+        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
             service.create(null);
         });
 

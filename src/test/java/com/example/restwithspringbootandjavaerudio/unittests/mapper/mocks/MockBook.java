@@ -3,8 +3,9 @@ package com.example.restwithspringbootandjavaerudio.unittests.mapper.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.BookVO;
 import com.example.restwithspringbootandjavaerudio.model.Book;
-import com.example.restwithspringbootandjavaerudio.vo.v1.BookVO;
 
 public class MockBook {
 

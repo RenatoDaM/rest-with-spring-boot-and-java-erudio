@@ -1,12 +1,6 @@
 package com.example.restwithspringbootandjavaerudio.integrationtests.vo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.github.dozermapper.core.Mapping;
-import org.springframework.hateoas.RepresentationModel;
-
 import java.io.Serializable;
-
 
 public class PersonVO implements Serializable {
 

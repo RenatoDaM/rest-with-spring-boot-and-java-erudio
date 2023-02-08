@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.PersonVO;
 import com.example.restwithspringbootandjavaerudio.mapper.DozerMapper;
 import com.example.restwithspringbootandjavaerudio.model.Person;
 import com.example.restwithspringbootandjavaerudio.unittests.mapper.mocks.MockPerson;
-import com.example.restwithspringbootandjavaerudio.vo.v1.PersonVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
