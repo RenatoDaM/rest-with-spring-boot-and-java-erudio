@@ -1,4 +1,4 @@
-package com.example.restwithspringbootandjavaerudio.data.vo.v1.security;
+package com.example.restwithspringbootandjavaerudio.integrationtests.vo;
 
 import java.io.Serializable;
 import java.util.Date;

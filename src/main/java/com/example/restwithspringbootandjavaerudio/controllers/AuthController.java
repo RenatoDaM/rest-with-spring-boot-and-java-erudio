@@ -27,8 +27,10 @@ public class AuthController {
 	@Operation(summary = "Authenticates a user and returns a token")
 	@PostMapping(value = "/signin")
 	public ResponseEntity signin(@RequestBody AccountCredentialsVO data) {
+		System.out.println("to aqui");
 		if (checkIfParamsIsNotNull(data))
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
+		System.out.println("vai faze signin");
 		var token = authServices.signin(data);
 		if (token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 		return token;

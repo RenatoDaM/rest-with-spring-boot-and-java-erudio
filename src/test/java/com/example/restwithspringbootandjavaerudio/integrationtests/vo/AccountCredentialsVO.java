@@ -1,7 +1,8 @@
-package com.example.restwithspringbootandjavaerudio.data.vo.v1.security;
+package com.example.restwithspringbootandjavaerudio.integrationtests.vo;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class AccountCredentialsVO implements Serializable{

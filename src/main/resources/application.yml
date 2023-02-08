@@ -1,5 +1,5 @@
 cors:
-  originPatterns: http://localhost8080,https://erudio.com.br,https://localhost:3000
+  originPatterns: http://localhost:8080,https://erudio.com.br,https://localhost:3000
 security:
   jwt:
     token:

@@ -34,15 +34,19 @@ public class AuthServices {
 				new UsernamePasswordAuthenticationToken(username, password));
 			
 			var user = repository.findByUsername(username);
-			
+			System.out.println(user.getId());
+			System.out.println(user.getPassword());
+			System.out.println(user.getUserName());
 			var tokenResponse = new TokenVO();
 			if (user != null) {
+				System.out.println("nao ta nullllll");
 				tokenResponse = tokenProvider.createAccessToken(username, user.getRoles());
 			} else {
-				throw new UsernameNotFoundException("Username " + username + " not found!");
+				System.out.println("userrrrrrrr not found");;
 			}
 			return ResponseEntity.ok(tokenResponse);
 		} catch (Exception e) {
+			System.out.println("bad cred");
 			throw new BadCredentialsException("Invalid username/password supplied!");
 		}
 	}

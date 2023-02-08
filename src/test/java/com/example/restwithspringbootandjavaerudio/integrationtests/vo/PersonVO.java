@@ -1,5 +1,7 @@
 package com.example.restwithspringbootandjavaerudio.integrationtests.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class PersonVO implements Serializable {
@@ -7,9 +9,7 @@ public class PersonVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-
 	private String firstName;
-
 	private String lastName;
 
 	private String address;

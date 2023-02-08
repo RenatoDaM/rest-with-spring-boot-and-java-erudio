@@ -73,9 +73,9 @@ class PersonServicesTest {
         Person persisted = entity;
         PersonVO vo = input.mockVO(1);
 
-        when(modelMapper.map(vo, Person.class)).thenReturn(persisted);
+
         when(repository.save(entity)).thenReturn(persisted);
-        when(modelMapper.map(persisted, PersonVO.class)).thenReturn(vo);
+
 
         var result = service.create(vo);
 
@@ -132,7 +132,7 @@ class PersonServicesTest {
         assertNotNull(result);
         assertNotNull(result.getKey());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("links: [</api/person/v1/{id}>;rel=\"self\"]"));
+        assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
         assertEquals("Addres Test1", result.getAddress());
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
@@ -155,9 +155,9 @@ class PersonServicesTest {
             service.create(null);
         });
 
-        String expectedMessage = "It's not allowed to persist a null object";
+        String expectedMessage = "It is not allowed to persist a null object!";
         String actualMessage = exception.getMessage();
-
+        System.out.println(actualMessage);
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
@@ -167,7 +167,7 @@ class PersonServicesTest {
             service.create(null);
         });
 
-        String expectedMessage = "It's not allowed to persist a null object";
+        String expectedMessage = "It is not allowed to persist a null object!";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

@@ -1,8 +1,8 @@
 package com.example.restwithspringbootandjavaerudio.integrationtests.controller.withjson;
 
 import com.example.restwithspringbootandjavaerudio.configs.TestConfigs;
-import com.example.restwithspringbootandjavaerudio.data.vo.v1.security.AccountCredentialsVO;
-import com.example.restwithspringbootandjavaerudio.data.vo.v1.security.TokenVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCredentialsVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.testcontainer.AbstractIntegrationTest;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,6 +39,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     @Order(0)
     public void authorization() throws JsonMappingException, JsonProcessingException {
         AccountCredentialsVO user = new AccountCredentialsVO("leandro", "admin123");
+
         var accessToken = given()
                 .basePath("/auth/signin")
                 .port(TestConfigs.SERVER_PORT)
@@ -159,9 +160,6 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     @Test
     @Order(4)
     public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
-        //  ESTE MÉTODO APENAS FUNCIONA após o create, pois ele ira setar um ID. Poderia também setar um ID
-        //manualmente aqui ou no mock.
-
         mockPerson();
 
         var content = given().spec(specification)
