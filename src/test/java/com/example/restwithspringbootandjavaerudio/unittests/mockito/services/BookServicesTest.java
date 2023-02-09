@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
-import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullNotFoundException;
+
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.BookVO;
+import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullException;
 import com.example.restwithspringbootandjavaerudio.model.Book;
-import com.example.restwithspringbootandjavaerudio.repository.BookRepository;
-import com.example.restwithspringbootandjavaerudio.service.BookServices;
+import com.example.restwithspringbootandjavaerudio.repositories.BookRepository;
+import com.example.restwithspringbootandjavaerudio.services.BookServices;
 import com.example.restwithspringbootandjavaerudio.unittests.mapper.mocks.MockBook;
-import com.example.restwithspringbootandjavaerudio.vo.v1.BookVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -85,7 +86,7 @@ class BookServicesTest {
 	
 	@Test
 	void testCreateWithNullBook() {
-		Exception exception = assertThrows(RequiredObjectIsNullNotFoundException.class, () -> {
+		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
 			service.create(null);
 		});
 		
@@ -127,7 +128,7 @@ class BookServicesTest {
 	
 	@Test
 	void testUpdateWithNullBook() {
-		Exception exception = assertThrows(RequiredObjectIsNullNotFoundException.class, () -> {
+		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
 			service.update(null);
 		});
 		

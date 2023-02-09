@@ -1,4 +1,4 @@
-package com.example.restwithspringbootandjavaerudio.vo.v1;
+package com.example.restwithspringbootandjavaerudio.data.vo.v1;
 
 import java.io.Serializable;
 import java.util.Date;
