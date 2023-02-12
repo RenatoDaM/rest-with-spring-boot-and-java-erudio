@@ -1,8 +1,11 @@
 package com.example.restwithspringbootandjavaerudio.integrationtests.vo;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@XmlRootElement(name = "TokenVO")
 public class TokenVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -13,7 +16,7 @@ public class TokenVO implements Serializable{
 	private Date expiration;
 	private String accessToken;
 	private String refreshToken;
-	
+
 	public TokenVO() {}
 	
 	public TokenVO(
