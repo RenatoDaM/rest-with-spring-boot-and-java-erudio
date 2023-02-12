@@ -11,7 +11,7 @@ import java.util.Date;
 
 @XmlRootElement(name = "BookVO")
 @JsonPropertyOrder({"id", "author", "launchDate", "price", "title"})
-public class BookVO extends RepresentationModel<BookVO> implements Serializable {
+public class BookVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
