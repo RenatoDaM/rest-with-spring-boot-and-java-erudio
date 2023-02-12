@@ -1,6 +1,7 @@
 package com.example.restwithspringbootandjavaerudio.integrationtests.controller.withyaml;
 
 import com.example.restwithspringbootandjavaerudio.configs.TestConfigs;
+import com.example.restwithspringbootandjavaerudio.integrationtests.controller.withyaml.mapper.YamlMapper;
 import com.example.restwithspringbootandjavaerudio.integrationtests.testcontainer.AbstractIntegrationTest;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCredentialsVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.BookVO;
@@ -11,31 +12,34 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.config.EncoderConfig.encoderConfig;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class BookControllerJsonTest extends AbstractIntegrationTest {
+public class BookControllerYamlTest extends AbstractIntegrationTest {
     private static RequestSpecification specification;
-    private static ObjectMapper objectMapper;
+    private static YamlMapper objectMapper;
     private static BookVO bookVO;
 
 
     @BeforeAll
     public static void setup() {
-        objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper = new YamlMapper();
         bookVO = new BookVO();
     }
 
@@ -46,16 +50,17 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
 
         var accessToken = given()
                 .basePath("/auth/signin")
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
-                .body(user)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .body(user, objectMapper)
                 .when()
                 .post()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(TokenVO.class)
+                .as(TokenVO.class, objectMapper)
                 .getAccessToken();
 
         specification = new RequestSpecBuilder()
@@ -72,18 +77,18 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     public void testCreate() throws JsonMappingException, JsonProcessingException {
         mockPerson();
 
-        var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
-                .body(bookVO)
+        var persistedBook = given().spec(specification)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .body(bookVO, objectMapper)
                 .when()
                 .post()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .asString();
+                .as(BookVO.class, objectMapper);
 
-        BookVO persistedBook = objectMapper.readValue(content, BookVO.class);
         bookVO = persistedBook;
 
         assertNotNull(persistedBook);
@@ -108,18 +113,18 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     public void testUpdate() throws JsonMappingException, JsonProcessingException {
         bookVO.setAuthor("Piquet Souto Maior");
 
-        var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
-                .body(bookVO)
+        var persistedBook = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .body(bookVO, objectMapper)
                 .when()
                 .post()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .asString();
+                .as(BookVO.class, objectMapper);
 
-        BookVO persistedBook = objectMapper.readValue(content, BookVO.class);
         bookVO = persistedBook;
 
         assertNotNull(persistedBook);
@@ -141,8 +146,9 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     @Test
     @Order(3)
     public void testFindById() throws JsonMappingException, JsonProcessingException {
-        var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+        var persistedBook = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .header(TestConfigs.HEADER_PARAMETER_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
                 .pathParam("id", bookVO.getKey())
                 .when()
@@ -151,24 +157,23 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .statusCode(200)
                 .extract()
                 .body()
-                .asString();
+                .as(BookVO.class, objectMapper);
 
-        BookVO persistedPerson = objectMapper.readValue(content, BookVO.class);
-        bookVO = persistedPerson;
+        bookVO = persistedBook;
 
-        assertNotNull(persistedPerson);
+        assertNotNull(persistedBook);
 
-        assertNotNull(persistedPerson.getKey());
-        assertNotNull(persistedPerson.getLaunchDate());
-        assertNotNull(persistedPerson.getTitle());
-        assertNotNull(persistedPerson.getPrice());
-        assertNotNull(persistedPerson.getAuthor());
+        assertNotNull(persistedBook.getKey());
+        assertNotNull(persistedBook.getLaunchDate());
+        assertNotNull(persistedBook.getTitle());
+        assertNotNull(persistedBook.getPrice());
+        assertNotNull(persistedBook.getAuthor());
 
-        assertTrue(persistedPerson.getKey() > 0);
+        assertTrue(persistedBook.getKey() > 0);
 
-        assertEquals("Piquet Souto Maior", persistedPerson.getAuthor());
-        assertEquals("Darkness through your heart", persistedPerson.getTitle());
-        assertEquals(40.00, persistedPerson.getPrice());
+        assertEquals("Piquet Souto Maior", persistedBook.getAuthor());
+        assertEquals("Darkness through your heart", persistedBook.getTitle());
+        assertEquals(40.00, persistedBook.getPrice());
 
     }
 
@@ -177,7 +182,8 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     @Order(4)
     public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .header(TestConfigs.HEADER_PARAMETER_ORIGIN, TestConfigs.ORIGIN_SEMERU)
                 .pathParam("id", bookVO.getKey())
                 .when()
@@ -185,10 +191,9 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(403)
                 .extract()
-                .body()
-                .asString();
+                .body().asString();
 
-
+        System.out.println(content);
         assertNotNull(content);
         assertEquals("Invalid CORS request", content);
     }
@@ -199,7 +204,8 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
         mockPerson();
 
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .pathParam("id", bookVO.getKey())
                 .when()
                 .delete("{id}")
@@ -211,17 +217,16 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     @Order(6)
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .asString();
+                .as(BookVO[].class, objectMapper);
 
-
-        List<BookVO> people = objectMapper.readValue(content, new TypeReference<List<BookVO>>() {});
+        List<BookVO> people = Arrays.asList(content);
 
         BookVO dataBaseBook = people.get(0);
 
@@ -252,7 +257,8 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .build();
 
         given().spec(specificationWithoutToken)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .when()
                 .get()
                 .then()
