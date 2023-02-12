@@ -1,7 +1,7 @@
 package com.example.restwithspringbootandjavaerudio.unittests.mapper.mocks;
 
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.PersonVO;
 import com.example.restwithspringbootandjavaerudio.model.Person;
-import com.example.restwithspringbootandjavaerudio.vo.v1.PersonVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +9,17 @@ import java.util.List;
 
 public class MockPerson {
 
-
     public Person mockEntity() {
-        return mockEntity(0L);
+        return mockEntity(0);
     }
-    
+
     public PersonVO mockVO() {
         return mockVO(0);
     }
-    
+
     public List<Person> mockEntityList() {
         List<Person> persons = new ArrayList<Person>();
-        for (Long i = 0L; i < 14L; i++) {
+        for (int i = 0; i < 14; i++) {
             persons.add(mockEntity(i));
         }
         return persons;
@@ -33,8 +32,8 @@ public class MockPerson {
         }
         return persons;
     }
-    
-    public Person mockEntity(Long number) {
+
+    public Person mockEntity(Integer number) {
         Person person = new Person();
         person.setAddress("Addres Test" + number);
         person.setFirstName("First Name Test" + number);
