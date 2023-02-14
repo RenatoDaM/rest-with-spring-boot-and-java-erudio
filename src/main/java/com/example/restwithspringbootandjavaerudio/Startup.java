@@ -5,6 +5,8 @@ import java.util.Map;*/
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
@@ -18,10 +20,16 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.Secret
 
 @SpringBootApplication
 public class Startup {
-
+/*    @Bean
+    public FlywayMigrationStrategy cleanMigrateStrategy() {
+        return flyway -> {
+            flyway.repair();
+            flyway.migrate();
+        };
+    }*/
     public static void main(String[] args) {
         SpringApplication.run(Startup.class, args);
-        
+
 /*
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         

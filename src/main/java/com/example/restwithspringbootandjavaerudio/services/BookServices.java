@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.example.restwithspringbootandjavaerudio.controllers.BookController;
 import com.example.restwithspringbootandjavaerudio.data.vo.v1.BookVO;
+import com.example.restwithspringbootandjavaerudio.data.vo.v1.PersonVO;
 import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNullException;
 import com.example.restwithspringbootandjavaerudio.exceptions.ResourceNotFoundException;
 import com.example.restwithspringbootandjavaerudio.mapper.DozerMapper;
@@ -13,6 +14,12 @@ import com.example.restwithspringbootandjavaerudio.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,15 +30,19 @@ public class BookServices {
 	@Autowired
 	BookRepository repository;
 
-	public List<BookVO> findAll() {
+	@Autowired
+	PagedResourcesAssembler<BookVO> assembler;
+
+	public PagedModel<EntityModel<BookVO>> findAll(Pageable pageable) {
 
 		logger.info("Finding all book!");
-
-		var books = DozerMapper.parseListObjects(repository.findAll(), BookVO.class);
-		books
-			.stream()
-			.forEach(p -> p.add(linkTo(methodOn(BookController.class).findById(p.getKey())).withSelfRel()));
-		return books;
+		var bookPage = repository.findAll(pageable);
+		var bookVOPage = bookPage.map(p -> DozerMapper.parseObject(p, BookVO.class));
+		bookVOPage.map(p -> p.add(linkTo(methodOn(BookController.class).findById(p.getKey())).withSelfRel()));
+		Link link = linkTo(methodOn(BookController.class)
+				.findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc"))
+				.withSelfRel();
+		return assembler.toModel(bookVOPage, link);
 	}
 
 	public BookVO findById(Long id) {
