@@ -5,8 +5,8 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.testcontaine
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCredentialsVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.PagedModelPerson;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -17,8 +17,6 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -259,6 +257,7 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .accept(TestConfigs.CONTENT_TYPE_XML)
+                .queryParam("page", 3, "size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -268,25 +267,24 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
                 .asString();
 
 
-        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
-
+        /*List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});*/
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
         PersonVO dataBasePerson = people.get(0);
 
         assertNotNull(dataBasePerson);
         assertTrue(dataBasePerson.getId() > 0);
-        assertEquals("Muahmmed", dataBasePerson.getFirstName());
-        assertEquals("Ali", dataBasePerson.getLastName());
-        assertEquals("male", dataBasePerson.getGender());
-        assertEquals("Kent", dataBasePerson.getAddress());
-        assertTrue(dataBasePerson.getEnabled());
+        assertEquals("Alla", dataBasePerson.getFirstName());
+        assertEquals("Astall", dataBasePerson.getLastName());
+        assertEquals("Female", dataBasePerson.getGender());
+        assertEquals("72525 Emmet Alley", dataBasePerson.getAddress());
 
         dataBasePerson = people.get(1);
 
-        assertEquals("tesst", dataBasePerson.getFirstName());
-        assertEquals("2333", dataBasePerson.getLastName());
-        assertEquals("male", dataBasePerson.getGender());
-        assertEquals("44", dataBasePerson.getAddress());
-        assertTrue(dataBasePerson.getEnabled());
+        assertEquals("Allegra", dataBasePerson.getFirstName());
+        assertEquals("Dome", dataBasePerson.getLastName());
+        assertEquals("Female", dataBasePerson.getGender());
+        assertEquals("57 Roxbury Pass", dataBasePerson.getAddress());
 
     }
 

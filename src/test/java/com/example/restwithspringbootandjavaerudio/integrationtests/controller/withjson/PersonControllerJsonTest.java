@@ -5,6 +5,7 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCr
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.testcontainer.AbstractIntegrationTest;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.WrapperPersonVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -246,6 +247,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParam("page", 3, "size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -255,23 +257,27 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .asString();
 
 
+/*
         List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+*/
+        WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+        var people = wrapper.getEmbedded().getPersons();
 
         PersonVO dataBasePerson = people.get(0);
 
         assertNotNull(dataBasePerson);
         assertTrue(dataBasePerson.getId() > 0);
-        assertEquals("Muahmmed", dataBasePerson.getFirstName());
-        assertEquals("Ali", dataBasePerson.getLastName());
-        assertEquals("male", dataBasePerson.getGender());
-        assertEquals("Kent", dataBasePerson.getAddress());
+        assertEquals("Alla", dataBasePerson.getFirstName());
+        assertEquals("Astall", dataBasePerson.getLastName());
+        assertEquals("Female", dataBasePerson.getGender());
+        assertEquals("72525 Emmet Alley", dataBasePerson.getAddress());
 
         dataBasePerson = people.get(1);
 
-        assertEquals("tesst", dataBasePerson.getFirstName());
-        assertEquals("2333", dataBasePerson.getLastName());
-        assertEquals("male", dataBasePerson.getGender());
-        assertEquals("44", dataBasePerson.getAddress());
+        assertEquals("Allegra", dataBasePerson.getFirstName());
+        assertEquals("Dome", dataBasePerson.getLastName());
+        assertEquals("Female", dataBasePerson.getGender());
+        assertEquals("57 Roxbury Pass", dataBasePerson.getAddress());
 
     }
 
