@@ -6,6 +6,8 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCr
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.BookVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.book.BookEmbeddedVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.book.WrapperBookVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -212,6 +214,7 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParam("page", 0, "size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -220,23 +223,23 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-
-        List<BookVO> people = objectMapper.readValue(content, new TypeReference<List<BookVO>>() {});
-
+        System.out.println(content);
+        WrapperBookVO wrapper = objectMapper.readValue(content, WrapperBookVO.class);
+        List<BookVO> people = wrapper.getEmbedded().getBooks();
         BookVO dataBaseBook = people.get(0);
 
         assertNotNull(dataBaseBook);
-        assertEquals("Michael C. Feathers", dataBaseBook.getAuthor());
-        assertEquals("Working effectively with legacy code", dataBaseBook.getTitle());
-        assertEquals(49.00, dataBaseBook.getPrice());
+        assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", dataBaseBook.getAuthor());
+        assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", dataBaseBook.getTitle());
+        assertEquals(54.0, dataBaseBook.getPrice());
 
 
         dataBaseBook = people.get(1);
 
         assertNotNull(dataBaseBook);
-        assertEquals("Ralph Johnson, Erich Gamma, John Vlissides e Richard Helm", dataBaseBook.getAuthor());
-        assertEquals("Design Patterns", dataBaseBook.getTitle());
-        assertEquals(45.00, dataBaseBook.getPrice());
+        assertEquals("Robert C. Martin", dataBaseBook.getAuthor());
+        assertEquals("Clean Code", dataBaseBook.getTitle());
+        assertEquals(77.0, dataBaseBook.getPrice());
 
 
     }

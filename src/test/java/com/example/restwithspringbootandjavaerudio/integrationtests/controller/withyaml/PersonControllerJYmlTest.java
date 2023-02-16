@@ -6,7 +6,7 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.testcontaine
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCredentialsVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
-import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.PagedModelPerson;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person.PagedModelPerson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import io.restassured.RestAssured;
@@ -280,6 +280,8 @@ public class PersonControllerJYmlTest extends AbstractIntegrationTest {
 
     }
 
+
+
     @Test
     @Order(8)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
@@ -300,6 +302,38 @@ public class PersonControllerJYmlTest extends AbstractIntegrationTest {
                 .extract()
                 .body()
                 .as(TokenVO.class, objectMapper);
+    }
+
+    @Test
+    @Order(9)
+    public void testPersonsByName() throws JsonMappingException, JsonProcessingException {
+        var wrapper = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .accept(TestConfigs.CONTENT_TYPE_YML)
+                .queryParam("page", 0, "size", 6, "direction", "asc")
+                .pathParam("firstName", "dgard")
+                .when()
+                .get("/findPersonsByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(/*PersonVO[].class*/PagedModelPerson.class, objectMapper);
+
+
+        /*List<PersonVO> people = Arrays.asList(content);*/
+        var people = wrapper.getContent();
+        PersonVO dataBasePerson = people.get(0);
+
+        assertNotNull(dataBasePerson);
+        assertTrue(dataBasePerson.getId() > 0);
+        assertTrue(dataBasePerson.getEnabled());
+        assertEquals("Edgard", dataBasePerson.getFirstName());
+        assertEquals("Detoc", dataBasePerson.getLastName());
+        assertEquals("Male", dataBasePerson.getGender());
+        assertEquals("5859 Di Loreto Alley", dataBasePerson.getAddress());
+
     }
 
 

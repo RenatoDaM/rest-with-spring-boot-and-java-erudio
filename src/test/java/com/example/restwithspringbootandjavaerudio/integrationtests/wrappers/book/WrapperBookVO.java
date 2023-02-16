@@ -1,23 +1,24 @@
-package com.example.restwithspringbootandjavaerudio.integrationtests.wrappers;
+package com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.book;
 
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person.PersonEmbeddedVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class WrapperPersonVO implements Serializable {
+public class WrapperBookVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("_embedded")
-    private PersonEmbeddedVO embedded;
+    private BookEmbeddedVO embedded;
 
-    public WrapperPersonVO() {}
+    public WrapperBookVO() {}
 
-    public PersonEmbeddedVO getEmbedded() {
+    public BookEmbeddedVO getEmbedded() {
         return embedded;
     }
 
-    public void setEmbedded(PersonEmbeddedVO embedded) {
+    public void setEmbedded(BookEmbeddedVO embedded) {
         this.embedded = embedded;
     }
 
@@ -25,7 +26,7 @@ public class WrapperPersonVO implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WrapperPersonVO that = (WrapperPersonVO) o;
+        WrapperBookVO that = (WrapperBookVO) o;
         return embedded.equals(that.embedded);
     }
 

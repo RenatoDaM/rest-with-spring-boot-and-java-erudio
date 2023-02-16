@@ -5,9 +5,8 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCr
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.testcontainer.AbstractIntegrationTest;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
-import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.WrapperPersonVO;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person.WrapperPersonVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +17,6 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -278,6 +274,41 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertEquals("Dome", dataBasePerson.getLastName());
         assertEquals("Female", dataBasePerson.getGender());
         assertEquals("57 Roxbury Pass", dataBasePerson.getAddress());
+
+    }
+
+    @Test
+    @Order(7)
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParam("page", 0, "size", 6, "direction", "asc")
+                .pathParam("firstName", "dgard")
+                .when()
+                .get("findPersonsByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+
+/*
+        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+*/
+        WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+        var people = wrapper.getEmbedded().getPersons();
+
+        PersonVO dataBasePerson = people.get(0);
+
+        assertNotNull(dataBasePerson);
+        assertTrue(dataBasePerson.getId() > 0);
+        assertTrue(dataBasePerson.getEnabled());
+        assertEquals("Edgard", dataBasePerson.getFirstName());
+        assertEquals("Detoc", dataBasePerson.getLastName());
+        assertEquals("Male", dataBasePerson.getGender());
+        assertEquals("5859 Di Loreto Alley", dataBasePerson.getAddress());
+
 
     }
 

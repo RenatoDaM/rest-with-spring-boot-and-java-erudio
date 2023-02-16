@@ -5,7 +5,8 @@ import com.example.restwithspringbootandjavaerudio.integrationtests.testcontaine
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.AccountCredentialsVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.TokenVO;
-import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.PagedModelPerson;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person.PagedModelPerson;
+import com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person.WrapperPersonVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -308,6 +309,42 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
                 .extract()
                 .body()
                 .asString();
+    }
+
+    @Test
+    @Order(9)
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
+                .queryParam("page", 0, "size", 6, "direction", "asc")
+                .pathParam("firstName", "dgard")
+                .when()
+                .get("findPersonsByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+
+/*
+        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+*/
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
+
+        PersonVO dataBasePerson = people.get(0);
+
+        assertNotNull(dataBasePerson);
+        assertTrue(dataBasePerson.getId() > 0);
+        assertTrue(dataBasePerson.getEnabled());
+        assertEquals("Edgard", dataBasePerson.getFirstName());
+        assertEquals("Detoc", dataBasePerson.getLastName());
+        assertEquals("Male", dataBasePerson.getGender());
+        assertEquals("5859 Di Loreto Alley", dataBasePerson.getAddress());
+
+
     }
 
 

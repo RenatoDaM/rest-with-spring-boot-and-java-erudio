@@ -1,4 +1,4 @@
-package com.example.restwithspringbootandjavaerudio.integrationtests.wrappers;
+package com.example.restwithspringbootandjavaerudio.integrationtests.wrappers.person;
 
 import com.example.restwithspringbootandjavaerudio.integrationtests.vo.PersonVO;
 import jakarta.xml.bind.annotation.XmlElement;
