@@ -21,6 +21,8 @@ import com.example.restwithspringbootandjavaerudio.exceptions.RequiredObjectIsNu
 import com.example.restwithspringbootandjavaerudio.model.Person;
 import com.example.restwithspringbootandjavaerudio.repositories.PersonRepository;
 import com.example.restwithspringbootandjavaerudio.services.PersonServices;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 
 
@@ -34,9 +36,6 @@ class PersonServicesTest {
     private PersonServices service;
     @Mock
     PersonRepository repository;
-
-    @Mock
-    ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -66,16 +65,18 @@ class PersonServicesTest {
         assertEquals("Female", result.getGender());
     }
 
-    //@MockitoSettings(strictness = Strictness.WARN)
+    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     void testCreate() {
         Person entity = input.mockEntity(1);
-        Person persisted = entity;
-        PersonVO vo = input.mockVO(1);
+        entity.setId(1L);
 
+        Person persisted = entity;
+        persisted.setId(1L);
+        PersonVO vo = input.mockVO(1);
+        vo.setKey(1L);
 
         when(repository.save(entity)).thenReturn(persisted);
-
 
         var result = service.create(vo);
 
@@ -89,6 +90,7 @@ class PersonServicesTest {
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
         assertEquals("Female", result.getGender());
+        System.out.println(result.getKey());
     }
 
     /*@Test

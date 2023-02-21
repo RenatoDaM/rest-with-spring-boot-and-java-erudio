@@ -270,7 +270,47 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
                 .asString();
     }
 
+    @Test
+    @Order(6)
+    public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .config(RestAssuredConfig.config().encoderConfig(encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .accept(TestConfigs.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 10, "direction", "asc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
 
+        assertTrue(content.contains("- rel: \"first\"\n" +
+                "  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=10&sort=title,asc\""));
+        assertTrue(content.contains("- rel: \"self\"\n" +
+                "  href: \"http://localhost:8888/api/book/v1?page=0&size=10&direction=asc\""));
+        assertTrue(content.contains("- rel: \"next\"\n" +
+                "  href: \"http://localhost:8888/api/book/v1?direction=asc&page=1&size=10&sort=title,asc\""));
+        assertTrue(content.contains("- rel: \"last\"\n" +
+                "  href: \"http://localhost:8888/api/book/v1?direction=asc&page=1&size=10&sort=title,asc\""));
+        assertTrue(content.contains("page:\n" +
+                "  size: 10\n" +
+                "  totalElements: 15\n" +
+                "  totalPages: 2\n" +
+                "  number: 0"));
+        assertTrue(content.contains("content:\n" +
+                "- id: 12\n" +
+                "  author: \"Viktor Mayer-Schonberger e Kenneth Kukier\"\n" +
+                "  launchDate: 1510020000000\n" +
+                "  price: 54.0\n" +
+                "  title: \"Big Data: como extrair volume, variedade, velocidade e valor da avalanche\\\n" +
+                "    \\ de informação cotidiana\"\n" +
+                "  links:\n" +
+                "  - rel: \"self\"\n" +
+                "    href: \"http://localhost:8888/api/book/v1/12\"\n" +
+                "  links: []"));
+    }
     private void mockPerson() {
 
         bookVO.setAuthor("Kandar Anzudere");

@@ -265,7 +265,29 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .asString();
     }
 
+    @Test
+    @Order(6)
+    public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParams("page", 0, "size", 10, "direction", "asc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
 
+        assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":15,\"totalPages\":2,\"number\":0}}"));
+        assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=1&size=10&sort=title,asc\"}}"));
+        assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=1&size=10&sort=title,asc\"}"));
+        assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/api/book/v1?page=0&size=10&direction=asc\"}"));
+        assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=0&size=10&sort=title,asc\"}"));
+        assertTrue(content.contains("\"id\":3,\"author\":\"Robert C. Martin\",\"launchDate\":\"2009-01-10T02:00:00.000+00:00\",\"price\":77.0,\"title\":\"Clean Code\""));
+        assertTrue(content.contains("{\"id\":3,\"author\":\"Robert C. Martin\",\"launchDate\":\"2009-01-10T02:00:00.000+00:00\",\"price\":77.0,\"title\":\"Clean Code\",\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/book/v1/3\"}}}"));
+
+    }
     private void mockPerson() {
 
         bookVO.setAuthor("Kandar Anzudere");
