@@ -35,7 +35,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Docker Compose Build
-      working-directory: /home/runner/work/rest-with-spring-boot-and-java-erudio
+      working-directory: /home/runner/work/rest-with-spring-boot-and-java-erudio/rest-with-spring-boot-and-java-erudio/docker-compose.yml
       run: docker compose build
 
     - name: Push to Docker Hub Container Registry
