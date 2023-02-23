@@ -28,7 +28,7 @@ jobs:
         cache: maven
     - name: Build Application JAR
       working-directory: ./IdeaProjects/rest-with-spring-boot-and-java-erudio
-      run: mvn clean package
+      run: pwd
       
     - name: Docker Compose Build
       working-directory: ./IdeaProjects
