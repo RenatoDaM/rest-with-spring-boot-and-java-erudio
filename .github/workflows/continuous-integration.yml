@@ -26,12 +26,13 @@ jobs:
         java-version: '18'
         distribution: 'adopt'
         cache: maven
+
     - name: Build Application JAR
-      working-directory: ./IdeaProjects/rest-with-spring-boot-and-java-erudio
+
       run: mvn clean package
       
     - name: Docker Compose Build
-      working-directory: ./IdeaProjects
+
       run: docker compose build
 
     - name: Push to Docker Hub Container Registry
