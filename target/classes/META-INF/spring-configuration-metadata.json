@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "file",
+      "type": "com.example.restwithspringbootandjavaerudio.config.FileStorageConfig",
+      "sourceType": "com.example.restwithspringbootandjavaerudio.config.FileStorageConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.example.restwithspringbootandjavaerudio.config.FileStorageConfig"
+    }
+  ],
+  "hints": []
+}
