@@ -34,6 +34,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        version: v0.7.0
+
     - name: Docker Compose Build
       working-directory: /home/runner/work/rest-with-spring-boot-and-java-erudio/rest-with-spring-boot-and-java-erudio
       run: docker compose build
