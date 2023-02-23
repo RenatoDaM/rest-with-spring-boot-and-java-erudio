@@ -1,7 +1,7 @@
 package com.example.restwithspringbootandjavaerudio.configs;
 
 public class TestConfigs {
-    public static final Integer SERVER_PORT = 80;
+    public static final Integer SERVER_PORT = 8888;
     public static final String HEADER_PARAMETER_ORIGIN = "Origin";
     public static final String HEADER_PARAMETER_AUTHORIZATION = "Authorization";
 
