@@ -20,10 +20,8 @@ jobs:
     # Password or personal access token used to log against the Docker registry
         password: ${{secrets.DOCKER_PASSWORD}}
 
-    - name: Docker Build and Push to DockerHub
-      run: |
-        docker build ${{secrets.DOCKER_USERNAME}}/rest-with-spring-boot-erudio:latest
-        docker push ${{secrets.DOCKER_USERNAME}}/rest-with-spring-boot-erudio:latest
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
     - name: Set up JDK 18
       uses: actions/setup-java@v3
