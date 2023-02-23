@@ -22,7 +22,7 @@ jobs:
 
     - name: Docker Build and Push to DockerHub
       run: |
-        docker build -t ${{secrets.DOCKER_USERNAME}}/rest-with-spring-boot-erudio:latest
+        docker build ${{secrets.DOCKER_USERNAME}}/rest-with-spring-boot-erudio:latest
         docker push ${{secrets.DOCKER_USERNAME}}/rest-with-spring-boot-erudio:latest
 
     - name: Set up JDK 18
