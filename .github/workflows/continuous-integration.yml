@@ -31,7 +31,8 @@ jobs:
       working-directory: /home/runner/work/rest-with-spring-boot-and-java-erudio/rest-with-spring-boot-and-java-erudio
       run: mvn clean package
 
-
+    - name: Check out code
+      uses: actions/checkout@v3
 
     - name: Docker Compose Build
       uses: actions/checkout@v3
